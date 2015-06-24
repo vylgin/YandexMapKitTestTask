@@ -1,3 +1,2 @@
 # YandexMapKitTestTask
 Тестовое задание
-
