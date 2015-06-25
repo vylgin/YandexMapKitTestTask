@@ -53,6 +53,7 @@ public class TaskInfoActivity extends AppCompatActivity {
         descriptionTextView.setText(task.getLongText());
 
         if (task.getPrices() != null && !task.getPrices().isEmpty()) {
+            priceLinearLayout.setVisibility(View.VISIBLE);
             for (Price price : task.getPrices()) {
                 View view = getLayoutInflater().inflate(R.layout.price_item, priceLinearLayout, false);
                 priceLinearLayout.addView(view);
