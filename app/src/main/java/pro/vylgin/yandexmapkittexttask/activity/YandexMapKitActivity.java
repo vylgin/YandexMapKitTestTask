@@ -60,7 +60,6 @@ public class YandexMapKitActivity extends BaseActivity implements OnBalloonListe
         setSupportActionBar(toolbar);
 
         initMap();
-
         sendRequest();
     }
 
@@ -90,10 +89,13 @@ public class YandexMapKitActivity extends BaseActivity implements OnBalloonListe
             OverlayItem overlayItem = new OverlayItem(
                     new GeoPoint(taskLocation.getLat(), taskLocation.getLon()),
                     res.getDrawable(R.mipmap.ic_launcher));
+
             BalloonItem balloonItem = new BalloonItem(this, overlayItem.getGeoPoint());
             balloonItem.setText(task.getTitle());
             balloonItem.setOnBalloonListener(this);
+
             overlayItem.setBalloonItem(balloonItem);
+
             overlay.addOverlayItem(overlayItem);
             taskBallonItems.add(new Pair<>(task, balloonItem));
         }
@@ -134,22 +136,11 @@ public class YandexMapKitActivity extends BaseActivity implements OnBalloonListe
     public void onBalloonViewClick(BalloonItem balloonItem, View view) {
         for (Pair<Task, BalloonItem> taskBallonItem : taskBallonItems) {
             if (taskBallonItem.second.equals(balloonItem)) {
-                Task first = taskBallonItem.first;
-
-                GsonBuilder builder = new GsonBuilder();
-                Gson gson = builder.create();
-                String json = gson.toJson(first);
-
-                Intent intent = new Intent(this, TaskInfoActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(TaskInfoActivity.TASK_JSON_TAG, json);
-                intent.putExtras(bundle);
-                startActivity(intent);
-
+                Task task = taskBallonItem.first;
+                TaskInfoActivity.show(this, task);
                 break;
             }
         }
-
     }
 
     @Override
