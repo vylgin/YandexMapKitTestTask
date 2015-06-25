@@ -7,4 +7,20 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_task_info">TaskInfoActivity</string>
     <string name="prices">Prices</string>
+
+    <string-array name="months">
+        <item>января</item>
+        <item>февраля</item>
+        <item>марта</item>
+        <item>апреля</item>
+        <item>мая</item>
+        <item>июня</item>
+        <item>июля</item>
+        <item>августа</item>
+        <item>сентября</item>
+        <item>октября</item>
+        <item>ноября</item>
+        <item>декабря</item>
+    </string-array>
+
 </resources>
