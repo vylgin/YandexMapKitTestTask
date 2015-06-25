@@ -3,4 +3,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_update">Обновить</string>
+    <string name="title_activity_kit">KitActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_task_info">TaskInfoActivity</string>
 </resources>

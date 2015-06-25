@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context="pro.vylgin.yandexmapkittexttask.activity.TaskInfoActivity">
 
     <android.support.v7.widget.Toolbar
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -12,17 +12,24 @@
         app:contentInsetStart="0dp"
         app:contentInsetEnd="0dp"
         app:popupTheme="@style/AppTheme"
-        android:id="@+id/mainToolbar"
+        android:id="@+id/taskInfoToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
         android:background="?attr/colorPrimary" />
 
-    <ru.yandex.yandexmapkit.MapView
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:apiKey="1234567890"
-        />
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:text="@string/hello_world" />
+
+    <TextView
+        android:id="@+id/descriptionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="@string/hello_world" />
 
 </LinearLayout>
