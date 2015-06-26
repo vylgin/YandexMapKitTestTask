@@ -1,5 +1,13 @@
 # YandexMapKitTestTask
 
+![Screenshot](https://raw.githubusercontent.com/vylgin/YandexMapKitTestTask/master/Screenshots/map1.png)
+&nbsp;
+![Screenshot](https://raw.githubusercontent.com/vylgin/YandexMapKitTestTask/master/Screenshots/task_info_1.png)
+
+![Screenshot](https://raw.githubusercontent.com/vylgin/YandexMapKitTestTask/master/Screenshots/map2.png)
+&nbsp;
+![Screenshot](https://raw.githubusercontent.com/vylgin/YandexMapKitTestTask/master/Screenshots/task_info_2.png)
+
 ### Тестовое задание:
 
 Необходимо реализовать приложение, которое будет отображать на карте "задания", которые пользователь может выполнять за деньги. Для отображения карт необходимо использовать Yandex Mapkit. Для того, чтобы получить список заданий, необходимо выполнить HTTP GET запрос:
