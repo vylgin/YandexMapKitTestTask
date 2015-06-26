@@ -7,6 +7,9 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_task_info">TaskInfoActivity</string>
     <string name="prices">Prices</string>
+    <string name="updating">Обновление...</string>
+    <string name="error_update">Ошибка загрузки списка заданий</string>
+    <string name="update_success">Список заданий обновлен</string>
 
     <string-array name="months">
         <item>января</item>

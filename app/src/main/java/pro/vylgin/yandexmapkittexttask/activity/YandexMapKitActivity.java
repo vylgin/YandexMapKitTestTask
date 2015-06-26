@@ -1,6 +1,8 @@
 package pro.vylgin.yandexmapkittexttask.activity;
 
 import android.content.res.Resources;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -10,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.support.design.widget.Snackbar;
 
 import com.octo.android.robospice.persistence.DurationInMillis;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -61,7 +64,7 @@ public class YandexMapKitActivity extends BaseActivity implements OnBalloonListe
     private void sendRequest() {
         TasksRetrofitSpiceRequest userRequest = new TasksRetrofitSpiceRequest();
         getSpiceManager().execute(userRequest, "tasksRequest", DurationInMillis.ALWAYS_EXPIRED, new TasksRequestListener());
-        isRefreshing = true;
+        startRefreshing();
     }
 
     private void initMap() {
@@ -70,20 +73,21 @@ public class YandexMapKitActivity extends BaseActivity implements OnBalloonListe
         overlayManager.getMyLocation().setEnabled(false);
     }
 
-    public void showObjectsOnMap(ArrayList<Task> tasks){
+    public void showObjectsOnMap(ArrayList<Task> tasks) {
         taskBallonItems = new ArrayList<>();
         if (overlay != null) {
             overlay.clearOverlayItems();
         }
 
-        Resources res = getResources();
         overlay = new Overlay(mapController);
 
         for (Task task : tasks) {
             Location taskLocation = task.getLocation();
+            Drawable overlayIcon = getResources().getDrawable(R.drawable.ic_ic_beenhere_blue_36px);
+
             OverlayItem overlayItem = new OverlayItem(
                     new GeoPoint(taskLocation.getLat(), taskLocation.getLon()),
-                    res.getDrawable(R.mipmap.ic_launcher));
+                    overlayIcon);
 
             BalloonItem balloonItem = new BalloonItem(this, overlayItem.getGeoPoint());
             balloonItem.setText(task.getTitle());
@@ -104,7 +108,7 @@ public class YandexMapKitActivity extends BaseActivity implements OnBalloonListe
         getMenuInflater().inflate(R.menu.menu_main, menu);
         this.menu = menu;
         if (isRefreshing) {
-            menu.findItem(R.id.action_update).setActionView(new ProgressBar(this));
+            startRefreshing();
         }
         return true;
     }
@@ -112,19 +116,28 @@ public class YandexMapKitActivity extends BaseActivity implements OnBalloonListe
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.action_update) {
-            Toast.makeText(this, "Обновление...", Toast.LENGTH_SHORT).show();
-
-            isRefreshing = true;
-            item.setActionView(new ProgressBar(this));
-
             sendRequest();
-
             return true;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startRefreshing() {
+//        if (!isRefreshing) {
+//            Snackbar.make(mapView, R.string.updating, Snackbar.LENGTH_LONG).show();
+//        }
+        if (menu != null) {
+            MenuItem updateMenuItem = menu.findItem(R.id.action_update);
+            updateMenuItem.setActionView(new ProgressBar(this));
+        }
+        isRefreshing = true;
+    }
+
+    private void stopRefreshing() {
+        isRefreshing = false;
+        MenuItem updateMenuItem = menu.findItem(R.id.action_update);
+        updateMenuItem.setActionView(null);
     }
 
     @Override
@@ -157,18 +170,17 @@ public class YandexMapKitActivity extends BaseActivity implements OnBalloonListe
     private class TasksRequestListener implements RequestListener<TasksResponse> {
         @Override
         public void onRequestFailure(SpiceException spiceException) {
-            isRefreshing = false;
-            Log.d(TAG, spiceException.getCause().getMessage());
+            stopRefreshing();
+            Log.d(TAG, spiceException.getMessage());
+            Snackbar.make(mapView, R.string.error_update, Snackbar.LENGTH_LONG).show();
         }
 
         @Override
         public void onRequestSuccess(TasksResponse tasksResponse) {
             showObjectsOnMap(tasksResponse.getTasks());
-
-            MenuItem updateMenuItem = menu.findItem(R.id.action_update);
-            updateMenuItem.setActionView(null);
-
-            isRefreshing = false;
+            stopRefreshing();
+            Snackbar.make(mapView, R.string.update_success, Snackbar.LENGTH_LONG).show();
         }
     }
+
 }

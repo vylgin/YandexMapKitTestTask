@@ -30,11 +30,34 @@ public class TaskInfoActivity extends AppCompatActivity {
 
     public static final String TASK_JSON_TAG = "TASK_JSON_TAG";
 
+    private TextView titleTextView;
+    private TextView descriptionTextView;
+    private LinearLayout priceLinearLayout;
+    private TextView pricesTextView;
+    private TextView dateTextView;
+    private TextView locationTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_info);
 
+        initToolbar();
+
+        titleTextView = (TextView) findViewById(R.id.titleTextView);
+        descriptionTextView = (TextView) findViewById(R.id.descriptionTextView);
+        priceLinearLayout = (LinearLayout) findViewById(R.id.priceLinearLayout);
+        pricesTextView = (TextView) findViewById(R.id.pricesTextView);
+        dateTextView = (TextView) findViewById(R.id.dateTextView);
+        locationTextView = (TextView) findViewById(R.id.locationTextView);
+
+        applyTypeface();
+
+        Task task = getTaskFromIntent();
+        showTaskInfo(task);
+    }
+
+    private void initToolbar() {
         Toolbar taskInfoToolbar = (Toolbar) findViewById(R.id.taskInfoToolbar);
         setSupportActionBar(taskInfoToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -44,56 +67,65 @@ public class TaskInfoActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
 
+    private Task getTaskFromIntent() {
+        Bundle bundle = getIntent().getExtras();
+        String jsonTask = bundle.getString(TASK_JSON_TAG);
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        return gson.fromJson(jsonTask, Task.class);
+    }
 
-        TextView titleTextView = (TextView) findViewById(R.id.titleTextView);
-        TextView descriptionTextView = (TextView) findViewById(R.id.descriptionTextView);
-        LinearLayout priceLinearLayout = (LinearLayout) findViewById(R.id.priceLinearLayout);
-        TextView pricesTextView = (TextView) findViewById(R.id.pricesTextView);
-        TextView dateTextView = (TextView) findViewById(R.id.dateTextView);
-        TextView locationTextView = (TextView) findViewById(R.id.locationTextView);
-
+    private void applyTypeface() {
         Typeface robotoRegularTypeface = TypefaceHelper.getRobotoRegular(this);
         Typeface robotoMediumTypeface = TypefaceHelper.getRobotoMedium(this);
-
         titleTextView.setTypeface(robotoRegularTypeface);
         descriptionTextView.setTypeface(robotoRegularTypeface);
         pricesTextView.setTypeface(robotoMediumTypeface);
         dateTextView.setTypeface(robotoRegularTypeface);
         locationTextView.setTypeface(robotoRegularTypeface);
+    }
 
-
-        Bundle bundle = getIntent().getExtras();
-        String jsonTask = bundle.getString(TASK_JSON_TAG);
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
-        Task task = gson.fromJson(jsonTask, Task.class);
-
+    private void showTaskInfo(Task task) {
         titleTextView.setText(task.getTitle());
         descriptionTextView.setText(task.getLongText());
 
+        initPriceLinearLayout(task);
+
+        dateTextView.setText(getDate(task));
+        locationTextView.setText(task.getLocationText());
+    }
+
+    private void initPriceLinearLayout(Task task) {
         if (task.getPrices() != null && !task.getPrices().isEmpty()) {
             priceLinearLayout.setVisibility(View.VISIBLE);
-
             for (Price price : task.getPrices()) {
-                View view = getLayoutInflater().inflate(R.layout.price_item, priceLinearLayout, false);
-                priceLinearLayout.addView(view);
-                TextView priceTextView = (TextView) view.findViewById(R.id.priceTextView);
-                TextView priceDescriptionTextView = (TextView) view.findViewById(R.id.priceDescriptionTextView);
-
-                priceTextView.setTypeface(robotoRegularTypeface);
-                priceDescriptionTextView.setTypeface(robotoRegularTypeface);
-
-                priceTextView.setText(String.valueOf(price.getPrice()));
-                priceDescriptionTextView.setText(price.getDescription());
+                addPriceView(price);
             }
         }
+    }
 
+    private void addPriceView(Price price) {
+        View view = getLayoutInflater().inflate(R.layout.price_item, priceLinearLayout, false);
+        priceLinearLayout.addView(view);
+
+        TextView priceTextView = (TextView) view.findViewById(R.id.priceTextView);
+        TextView priceDescriptionTextView = (TextView) view.findViewById(R.id.priceDescriptionTextView);
+
+        Typeface robotoRegularTypeface = TypefaceHelper.getRobotoRegular(this);
+        priceTextView.setTypeface(robotoRegularTypeface);
+        priceDescriptionTextView.setTypeface(robotoRegularTypeface);
+
+        priceTextView.setText(String.valueOf(price.getPrice()));
+        priceDescriptionTextView.setText(price.getDescription());
+    }
+
+    private String getDate(Task task) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(task.getDate());
-        dateTextView.setText(calendar.get(Calendar.DAY_OF_MONTH) + " " + getMonth(calendar) + " " + calendar.get(Calendar.YEAR));
 
-        locationTextView.setText(task.getLocationText());
+        return calendar.get(Calendar.DAY_OF_MONTH) + " " + getMonth(calendar) + " " + calendar.get(Calendar.YEAR);
     }
 
     private String getMonth(Calendar calendar) {
