@@ -88,7 +88,7 @@ public class TaskInfoActivity extends AppCompatActivity {
     }
 
     private void showTaskInfo(Task task) {
-        titleTextView.setText(task.getTitle());
+        titleTextView.setText(task.getText());
         descriptionTextView.setText(task.getLongText());
 
         initPriceLinearLayout(task);
